@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
         if (exitOnlyPoster != null) exitOnlyPoster.SetActive(false);
         if (blackOutPanel != null) blackOutPanel.SetActive(false);
 
+        ResetBailoutDoors();
+
         SetAllAnomaliesActive(false);
         UpdateStationSign();
         GenerateNewLoop();
@@ -65,6 +67,8 @@ public class GameManager : MonoBehaviour
         currentActiveAnomalyIndex = -1;
         if (exitOnlyPoster != null) exitOnlyPoster.SetActive(false);
 
+        ResetBailoutDoors();
+
         if (currentStage == 0)
         {
             hasAnomaly = false;
@@ -73,7 +77,7 @@ public class GameManager : MonoBehaviour
         {
             hasAnomaly = Random.Range(0, 100) < 50; //8‚ÌŽž‚ÌŠm—¦
         }
-        else 
+        else
         {
             hasAnomaly = Random.Range(0, 100) < 75; //1`7‚ÌŽž‚ÌŠm—¦
         }
@@ -170,5 +174,25 @@ public class GameManager : MonoBehaviour
     {
         isGameRestarting = true;
         SceneManager.LoadScene(clearSceneName);
+    }
+
+    private void ResetBailoutDoors()
+    {
+        BailoutSwitch bailoutScript = Object.FindAnyObjectByType<BailoutSwitch>();
+        if (bailoutScript != null)
+        {
+            Transform switchTransform = bailoutScript.transform;
+
+            Transform openDoor = switchTransform.Find("DoorOpenObject") ?? switchTransform.Find("doorOpenObject");
+            Transform closedDoor = switchTransform.Find("DoorClosedObject") ?? switchTransform.Find("doorClosedObject");
+            Transform textObj = switchTransform.Find("BailoutTextObject") ?? switchTransform.Find("bailoutTextObject");
+
+            if (openDoor == null && switchTransform.childCount > 0) openDoor = switchTransform.GetChild(0);
+            if (closedDoor == null && switchTransform.childCount > 1) closedDoor = switchTransform.GetChild(1);
+
+            if (openDoor != null) openDoor.gameObject.SetActive(true);
+            if (closedDoor != null) closedDoor.gameObject.SetActive(false);
+            if (textObj != null) textObj.gameObject.SetActive(false);
+        }
     }
 }
