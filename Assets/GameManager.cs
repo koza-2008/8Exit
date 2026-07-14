@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private int currentActiveAnomalyIndex = -1;
     private bool isDead = false;
 
+    private static int lastActiveAnomalyIndex = -1;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
         {
             currentStage = 0;
             isGameRestarting = false;
+            lastActiveAnomalyIndex = -1; 
         }
 
         isDead = false;
@@ -75,16 +78,29 @@ public class GameManager : MonoBehaviour
         }
         else if (currentStage == 8)
         {
-            hasAnomaly = Random.Range(0, 100) < 50; //8‚ÌŽž‚ÌŠm—¦
+            hasAnomaly = Random.Range(0, 100) < 30; //8‚ÌŽž‚ÌŠm—¦
         }
         else
         {
-            hasAnomaly = Random.Range(0, 100) < 75; //1`7‚ÌŽž‚ÌŠm—¦
+            hasAnomaly = Random.Range(0, 100) < 80; //1`7‚ÌŽž‚ÌŠm—¦
         }
 
         if (hasAnomaly && anomalyObjects != null && anomalyObjects.Length > 0)
         {
-            currentActiveAnomalyIndex = Random.Range(0, anomalyObjects.Length);
+            if (anomalyObjects.Length > 1)
+            {
+                do
+                {
+                    currentActiveAnomalyIndex = Random.Range(0, anomalyObjects.Length);
+                } while (currentActiveAnomalyIndex == lastActiveAnomalyIndex);
+            }
+            else
+            {
+                currentActiveAnomalyIndex = 0;
+            }
+
+            lastActiveAnomalyIndex = currentActiveAnomalyIndex;
+
             if (currentActiveAnomalyIndex >= 0 && currentActiveAnomalyIndex < anomalyObjects.Length)
             {
                 if (anomalyObjects[currentActiveAnomalyIndex] != null)
@@ -138,6 +154,7 @@ public class GameManager : MonoBehaviour
 
         currentStage = 0;
         isGameRestarting = false;
+        lastActiveAnomalyIndex = -1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
