@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [Header("出口限定の演出設定")]
     [SerializeField] private GameObject exitOnlyPoster;
 
+    [Header("0限定の演出設定")]
+    [SerializeField] private GameObject zeroOnlyObject;
+
     [Header("即死イベント演出設定")]
     [SerializeField] private GameObject blackOutPanel;
 
@@ -45,7 +48,7 @@ public class GameManager : MonoBehaviour
         {
             currentStage = 0;
             isGameRestarting = false;
-            lastActiveAnomalyIndex = -1; 
+            lastActiveAnomalyIndex = -1;
         }
 
         isDead = false;
@@ -70,6 +73,11 @@ public class GameManager : MonoBehaviour
         currentActiveAnomalyIndex = -1;
         if (exitOnlyPoster != null) exitOnlyPoster.SetActive(false);
 
+        if (zeroOnlyObject != null)
+        {
+            zeroOnlyObject.SetActive(currentStage == 0);
+        }
+
         ResetBailoutDoors();
 
         if (currentStage == 0)
@@ -82,7 +90,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            hasAnomaly = Random.Range(0, 100) < 80; //1～7の時の確率
+            hasAnomaly = Random.Range(0, 100) < 65; //1～7の時の確率
         }
 
         if (hasAnomaly && anomalyObjects != null && anomalyObjects.Length > 0)
@@ -169,6 +177,8 @@ public class GameManager : MonoBehaviour
         if (exitOnlyPoster != null) exitOnlyPoster.SetActive(true);
         if (exitSignObject != null) exitSignObject.SetActive(true);
         if (stairsObject != null) stairsObject.SetActive(true);
+
+        if (zeroOnlyObject != null) zeroOnlyObject.SetActive(false);
     }
 
     void SetAllAnomaliesActive(bool isActive)
